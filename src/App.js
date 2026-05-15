@@ -938,16 +938,34 @@ function App() {
             <button type="submit" disabled={gameOver || guessesLeft <= 0}>Guess</button>
           </form>
         ) : (
-          <div>
+          <div className="game-over-section">
             {gameOver && (
-              <div>
-                <p>{guessesLeft === 0 ? `Game Over! The correct player was ${selectedPlayer?.name}.` : message}</p>
-                {DEBUG ? (
-                  <button onClick={handlePlayAgain}>Play Again (debug)</button>
-                ) : (
-                  <button disabled title="Come back after midnight CT for a new player">Play Again</button>
-                )}
-                <button onClick={handleShare} style={{ marginLeft: 8 }}>Share Result</button>
+              <div className="result-display">
+                <div className={`result-message ${guessesLeft === 0 ? 'loss' : 'win'}`}>
+                  {guessesLeft === 0 ? (
+                    <>
+                      <div className="result-emoji">😢</div>
+                      <p className="result-text">Game Over!</p>
+                      <p className="result-subtext">The correct player was:</p>
+                      <div className="correct-player-name">{selectedPlayer?.name}</div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="result-emoji confetti">🎉</div>
+                      <p className="result-text">Correct!</p>
+                      <div className="correct-player-name">{selectedPlayer?.name}</div>
+                      <p className="result-subtext">in {8 - guessesLeft} guesses</p>
+                    </>
+                  )}
+                </div>
+                <div className="result-actions">
+                  {DEBUG ? (
+                    <button onClick={handlePlayAgain} className="btn-primary">Play Again (debug)</button>
+                  ) : (
+                    <button disabled title="Come back after midnight CT for a new player" className="btn-disabled">Play Again</button>
+                  )}
+                  <button onClick={handleShare} className="btn-secondary">Share Result</button>
+                </div>
               </div>
             )}
           </div>
