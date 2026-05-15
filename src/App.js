@@ -941,7 +941,7 @@ function App() {
           <div>
             {gameOver && (
               <div className="game-over-simple">
-                <p className="game-over-message">{guessesLeft === 0 ? `Game Over! The correct player was ${selectedPlayer?.name}.` : message}</p>
+                <p className="game-over-message">{message || `The correct player was ${selectedPlayer?.name}.`}</p>
                 <div className="game-over-buttons">
                   {DEBUG ? (
                     <button onClick={handlePlayAgain}>Play Again (debug)</button>
