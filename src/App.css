@@ -799,116 +799,152 @@ button:disabled{ background:#ccc; color:#666; cursor:not-allowed; box-shadow: no
   margin-top: 0 !important;
 }
 
-/* ===== MOBILE RESPONSIVE - KEEP SAME LAYOUT, JUST SMALLER ===== */
+/* ===== MOBILE RESPONSIVE ===== */
 @media (max-width:768px) {
-  /* Reduce column widths to fit on mobile without horizontal scroll */
-  :root {
-    --col-name: 85px;
-    --col-team: 55px;
-    --col-pos: 45px;
-    --col-conf: 55px;
-    --col-ht: 48px;
-    --col-age: 42px;
-    --col-num: 38px;
-    --row-h: 48px;
-  }
-
+  /* Make table stretch 100% width edge-to-edge */
   .App {
-    padding: 10px;
+    padding: 8px 0;
+    width: 100%;
   }
 
+  .game-info {
+    width: 100%;
+    padding: 0 8px;
+    box-sizing: border-box;
+  }
+
+  .info-box {
+    margin: 10px 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    overflow: visible !important;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .info-box-inner {
+    min-width: auto !important;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  /* Make columns use percentages to fill 100% */
+  .title, .guess {
+    width: 100%;
+    display: flex;
+    gap: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  .title .info-label, .guess .info-item {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.65em;
+    padding: 6px 2px !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .title .info-label:nth-child(1) { flex: 1.2; }
+  .title .info-label:nth-child(2) { flex: 0.8; }
+  .title .info-label:nth-child(3) { flex: 0.7; }
+  .title .info-label:nth-child(4) { flex: 0.8; }
+  .title .info-label:nth-child(5) { flex: 0.75; }
+  .title .info-label:nth-child(6) { flex: 0.7; }
+  .title .info-label:nth-child(7) { flex: 0.65; }
+
+  .guess .info-item:nth-child(1) { flex: 1.2; }
+  .guess .info-item:nth-child(2) { flex: 0.8; }
+  .guess .info-item:nth-child(3) { flex: 0.7; }
+  .guess .info-item:nth-child(4) { flex: 0.8; }
+  .guess .info-item:nth-child(5) { flex: 0.75; }
+  .guess .info-item:nth-child(6) { flex: 0.7; }
+  .guess .info-item:nth-child(7) { flex: 0.65; }
+
+  .guess {
+    height: 40px !important;
+    margin-bottom: 4px;
+    border-radius: 4px;
+  }
+
+  .guess .info-item:not(:last-child) {
+    border-right: 1.5px dotted #b0b3b8;
+  }
+
+  /* Scale down everything else */
   .brand-head {
-    width: 100px;
-    height: 100px;
+    width: 90px;
+    height: 90px;
   }
 
   .brand-text, .brand-dash, .brand-le {
-    font-size: 34px;
-    letter-spacing: 1px;
+    font-size: 32px;
   }
 
   input[type="text"] {
     font-size: 1em;
-    padding: 6px;
-    margin-bottom: 12px;
+    padding: 5px;
+    margin: 0 8px 12px;
+    width: calc(100% - 16px);
+    box-sizing: border-box;
   }
 
   button {
-    padding: 8px 14px;
-    font-size: 0.95em;
+    padding: 7px 12px;
+    font-size: 0.9em;
   }
 
   .silhouette, .actual {
-    width: 90vw;
-    max-width: 320px;
+    width: calc(100% - 16px);
+    max-width: 300px;
     height: auto;
     aspect-ratio: 4/3;
   }
 
   .shot-clock .digits {
-    font-size: 22px;
+    font-size: 20px;
   }
 
   .gm-seg {
-    width: 22px;
-    height: 7px;
+    width: 20px;
+    height: 6px;
   }
 
   .game-info h3 {
-    font-size: 0.95em;
-    margin-bottom: 8px;
-  }
-
-  .info-box {
-    padding: 8px;
-    border-radius: 8px;
-  }
-
-  .info-box-inner {
-    min-width: auto;
-  }
-
-  .title {
-    display: flex;
-    gap: 0;
-    margin-bottom: 6px;
-    height: 32px;
-  }
-
-  .title .info-label {
-    font-size: 0.75em;
-    font-weight: 700;
-  }
-
-  .guess {
-    height: var(--row-h) !important;
-    margin-bottom: 6px;
-    border-radius: 6px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08) !important;
-  }
-
-  .guess .info-item {
-    font-size: 0.8em;
-    padding: 0 4px !important;
-    font-weight: 500;
+    font-size: 0.9em;
+    margin: 0 8px 6px;
   }
 }
 
 @media (max-width:480px) {
-  /* Even smaller on tiny phones */
-  :root {
-    --col-name: 70px;
-    --col-team: 48px;
-    --col-pos: 38px;
-    --col-conf: 48px;
-    --col-ht: 42px;
-    --col-age: 36px;
-    --col-num: 32px;
-    --row-h: 44px;
+  .title .info-label:nth-child(1) { flex: 1.1; }
+  .title .info-label:nth-child(2) { flex: 0.75; }
+  .title .info-label:nth-child(3) { flex: 0.65; }
+  .title .info-label:nth-child(4) { flex: 0.75; }
+  .title .info-label:nth-child(5) { flex: 0.7; }
+  .title .info-label:nth-child(6) { flex: 0.65; }
+  .title .info-label:nth-child(7) { flex: 0.6; }
+
+  .guess .info-item:nth-child(1) { flex: 1.1; }
+  .guess .info-item:nth-child(2) { flex: 0.75; }
+  .guess .info-item:nth-child(3) { flex: 0.65; }
+  .guess .info-item:nth-child(4) { flex: 0.75; }
+  .guess .info-item:nth-child(5) { flex: 0.7; }
+  .guess .info-item:nth-child(6) { flex: 0.65; }
+  .guess .info-item:nth-child(7) { flex: 0.6; }
+
+  .title .info-label, .guess .info-item {
+    font-size: 0.6em;
   }
 
-  .App {
-    padding: 8px;
+  .guess {
+    height: 36px !important;
   }
 
   .brand-head {
@@ -917,25 +953,7 @@ button:disabled{ background:#ccc; color:#666; cursor:not-allowed; box-shadow: no
   }
 
   .brand-text, .brand-dash, .brand-le {
-    font-size: 30px;
-  }
-
-  input[type="text"] {
-    font-size: 0.95em;
-    padding: 5px;
-  }
-
-  button {
-    padding: 6px 12px;
-    font-size: 0.9em;
-  }
-
-  .title .info-label {
-    font-size: 0.7em;
-  }
-
-  .guess .info-item {
-    font-size: 0.75em;
+    font-size: 28px;
   }
 }
 
