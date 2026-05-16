@@ -1059,3 +1059,231 @@ button:disabled{ background:#ccc; color:#666; cursor:not-allowed; box-shadow: no
     padding: 10px 12px !important;
   }
 }
+
+/* =========================================================
+   MOBILE TABLE FIX — Poeltl-style full-width grid
+   Paste this at the VERY BOTTOM of App.css
+   ========================================================= */
+
+@media (max-width: 768px) {
+  html,
+  body,
+  #root {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .App {
+    width: 100%;
+    max-width: 100%;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+
+  .game-info {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    padding: 0 3px !important;
+    margin: 8px 0 0 !important;
+    box-sizing: border-box;
+  }
+
+  .info-box {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+    box-sizing: border-box;
+  }
+
+  .info-box-inner {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+    box-sizing: border-box;
+  }
+
+  .title {
+    display: grid !important;
+    grid-template-columns: 1.55fr 0.78fr 0.72fr 0.8fr 0.72fr 0.62fr 0.55fr !important;
+    width: 100% !important;
+    height: 26px !important;
+    min-height: 26px !important;
+    margin: 0 0 3px !important;
+    gap: 0 !important;
+    box-sizing: border-box;
+  }
+
+  .title .info-label {
+    width: auto !important;
+    min-width: 0 !important;
+    flex: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 10px !important;
+    line-height: 1 !important;
+    padding: 0 1px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .mobile-grid-head {
+    display: none !important;
+  }
+
+  .guess {
+    display: grid !important;
+    grid-template-columns: 1.55fr 0.78fr 0.72fr 0.8fr 0.72fr 0.62fr 0.55fr !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 48px !important;
+    min-height: 48px !important;
+    margin: 0 0 4px !important;
+    padding: 0 !important;
+    gap: 0 !important;
+    border: 2px solid #d1d5db !important;
+    border-radius: 6px !important;
+    background: #fff !important;
+    overflow: hidden !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12) !important;
+    box-sizing: border-box !important;
+    animation: guessFadeIn .25s ease-out !important;
+  }
+
+  .guess:hover {
+    transform: none !important;
+  }
+
+  .guess::before {
+    display: none !important;
+  }
+
+  .guess .info-item {
+    width: auto !important;
+    min-width: 0 !important;
+    flex: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 100% !important;
+    padding: 2px 1px !important;
+    font-size: 10px !important;
+    line-height: 1.05 !important;
+    font-weight: 700 !important;
+    text-align: center !important;
+    white-space: normal !important;
+    overflow: hidden !important;
+    text-overflow: clip !important;
+    word-break: normal !important;
+    box-sizing: border-box !important;
+    border-bottom: none !important;
+    border-right: 1px dotted #b0b3b8 !important;
+    color: #222 !important;
+  }
+
+  .guess .info-item:last-child {
+    border-right: none !important;
+  }
+
+  .guess .info-item::before {
+    content: none !important;
+    display: none !important;
+  }
+
+  .guess .name-cell {
+    font-size: 9.5px !important;
+    padding: 2px 3px !important;
+    line-height: 1.05 !important;
+  }
+
+  .team-cell > div {
+    gap: 0 !important;
+  }
+
+  .team-cell img {
+    height: 17px !important;
+    max-width: 28px !important;
+    margin-bottom: 0 !important;
+  }
+
+  .team-cell span {
+    font-size: 9px !important;
+    margin-top: 0 !important;
+  }
+
+  .pos-cell,
+  .conf-cell,
+  .ht-cell,
+  .age-cell,
+  .num-cell {
+    font-size: 10px !important;
+  }
+
+  .guess .info-item.ht-cell,
+  .guess .info-item.age-cell,
+  .guess .info-item.num-cell {
+    flex-direction: column !important;
+    gap: 0 !important;
+  }
+
+  .guess .info-item.ht-cell span,
+  .guess .info-item.age-cell span,
+  .guess .info-item.num-cell span {
+    font-size: 10px !important;
+    margin: 0 !important;
+    line-height: 1 !important;
+  }
+
+  .game-info h3 {
+    font-size: 0.95em !important;
+    margin: 0 0 6px !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .game-info {
+    padding: 0 2px !important;
+  }
+
+  .title {
+    grid-template-columns: 1.48fr 0.76fr 0.68fr 0.76fr 0.7fr 0.58fr 0.52fr !important;
+  }
+
+  .guess {
+    grid-template-columns: 1.48fr 0.76fr 0.68fr 0.76fr 0.7fr 0.58fr 0.52fr !important;
+    height: 46px !important;
+    min-height: 46px !important;
+  }
+
+  .title .info-label {
+    font-size: 9px !important;
+  }
+
+  .guess .info-item {
+    font-size: 9px !important;
+  }
+
+  .guess .name-cell {
+    font-size: 8.5px !important;
+  }
+
+  .team-cell img {
+    height: 15px !important;
+  }
+
+  .team-cell span {
+    font-size: 8px !important;
+  }
+}
