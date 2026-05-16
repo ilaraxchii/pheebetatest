@@ -799,126 +799,143 @@ button:disabled{ background:#ccc; color:#666; cursor:not-allowed; box-shadow: no
   margin-top: 0 !important;
 }
 
-/* ===== MOBILE RESPONSIVE - CLEAN & SIMPLE ===== */
+/* ===== MOBILE RESPONSIVE - KEEP SAME LAYOUT, JUST SMALLER ===== */
 @media (max-width:768px) {
-  /* Scale everything down proportionally */
-  .App {
-    padding: 12px;
+  /* Reduce column widths to fit on mobile without horizontal scroll */
+  :root {
+    --col-name: 85px;
+    --col-team: 55px;
+    --col-pos: 45px;
+    --col-conf: 55px;
+    --col-ht: 48px;
+    --col-age: 42px;
+    --col-num: 38px;
+    --row-h: 48px;
   }
-  
+
+  .App {
+    padding: 10px;
+  }
+
   .brand-head {
     width: 100px;
     height: 100px;
   }
-  
+
   .brand-text, .brand-dash, .brand-le {
-    font-size: 36px;
+    font-size: 34px;
+    letter-spacing: 1px;
   }
-  
+
   input[type="text"] {
     font-size: 1em;
     padding: 6px;
+    margin-bottom: 12px;
   }
-  
+
   button {
-    padding: 8px 16px;
-    font-size: 1em;
+    padding: 8px 14px;
+    font-size: 0.95em;
   }
-  
+
   .silhouette, .actual {
     width: 90vw;
-    max-width: 350px;
+    max-width: 320px;
     height: auto;
     aspect-ratio: 4/3;
   }
-  
+
   .shot-clock .digits {
-    font-size: 24px;
+    font-size: 22px;
   }
-  
+
   .gm-seg {
-    width: 24px;
-    height: 8px;
+    width: 22px;
+    height: 7px;
   }
-  
-  /* Keep table horizontal but make it fit */
-  :root {
-    --col-name: 100px;
-    --col-team: 70px;
-    --col-pos: 60px;
-    --col-conf: 70px;
-    --col-ht: 60px;
-    --col-age: 50px;
-    --col-num: 45px;
-    --row-h: 50px;
-  }
-  
-  .guess {
-    height: var(--row-h) !important;
-  }
-  
-  .guess .info-item {
-    font-size: 0.9em;
-  }
-  
+
   .game-info h3 {
-    font-size: 1em;
+    font-size: 0.95em;
+    margin-bottom: 8px;
   }
-  
-  /* Allow horizontal scroll but keep it clean */
+
   .info-box {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    padding: 8px;
     border-radius: 8px;
   }
-  
-  .info-box::-webkit-scrollbar {
-    height: 4px;
+
+  .info-box-inner {
+    min-width: auto;
   }
-  
-  .info-box::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 2px;
+
+  .title {
+    display: flex;
+    gap: 0;
+    margin-bottom: 6px;
+    height: 32px;
   }
-  
-  .info-box::-webkit-scrollbar-thumb {
-    background: #FF5910;
-    border-radius: 2px;
+
+  .title .info-label {
+    font-size: 0.75em;
+    font-weight: 700;
   }
-  
-  .info-box::-webkit-scrollbar-thumb:hover {
-    background: #E64800;
+
+  .guess {
+    height: var(--row-h) !important;
+    margin-bottom: 6px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08) !important;
+  }
+
+  .guess .info-item {
+    font-size: 0.8em;
+    padding: 0 4px !important;
+    font-weight: 500;
   }
 }
 
 @media (max-width:480px) {
+  /* Even smaller on tiny phones */
+  :root {
+    --col-name: 70px;
+    --col-team: 48px;
+    --col-pos: 38px;
+    --col-conf: 48px;
+    --col-ht: 42px;
+    --col-age: 36px;
+    --col-num: 32px;
+    --row-h: 44px;
+  }
+
+  .App {
+    padding: 8px;
+  }
+
   .brand-head {
     width: 80px;
     height: 80px;
   }
-  
+
   .brand-text, .brand-dash, .brand-le {
-    font-size: 32px;
+    font-size: 30px;
   }
-  
+
   input[type="text"] {
     font-size: 0.95em;
+    padding: 5px;
   }
-  
+
   button {
     padding: 6px 12px;
-    font-size: 0.95em;
+    font-size: 0.9em;
   }
-  
-  :root {
-    --col-name: 80px;
-    --col-team: 60px;
-    --col-pos: 50px;
-    --col-conf: 60px;
-    --col-ht: 50px;
-    --col-age: 40px;
-    --col-num: 40px;
-    --row-h: 45px;
+
+  .title .info-label {
+    font-size: 0.7em;
+  }
+
+  .guess .info-item {
+    font-size: 0.75em;
   }
 }
 
