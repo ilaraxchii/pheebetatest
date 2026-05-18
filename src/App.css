@@ -339,17 +339,10 @@ button:disabled{ background:#ccc; color:#666; cursor:not-allowed; box-shadow: no
 @keyframes moveUpDown{ 0%{transform:translateY(0)} 50%{transform:translateY(-5px)} 100%{transform:translateY(0)} }
 @keyframes moveDownUp{ 0%{transform:translateY(0)} 50%{transform:translateY(5px)} 100%{transform:translateY(0)} }
 @keyframes guessFadeIn{ from{opacity:0; transform:translateY(-5px)} to{opacity:1; transform:translateY(0)} }
-.arrow-up{ display:inline-block; animation: moveUpDown 2s infinite; margin-left:8px; }
-.arrow-down{ display:inline-block; animation: moveDownUp 2s infinite; margin-left:8px; }
+.arrow-up{ display:inline-block; animation: moveUpDown 2s infinite; margin-left:5px; }
+.arrow-down{ display:inline-block; animation: moveDownUp 2s infinite; margin-left:5px; }
 /* nudge arrows in age column a touch */
 .age-cell .arrow-up, .age-cell .arrow-down { margin-top:2px; }
-
-@media (max-width:768px) {
-  .arrow-up, .arrow-down {
-    margin-left: 12px;
-    font-size: 0.8em;
-  }
-}
 
 /* images */
 .silhouette{ 
@@ -585,8 +578,8 @@ button:disabled{ background:#ccc; color:#666; cursor:not-allowed; box-shadow: no
   box-shadow: 0 2px 6px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.5);
   transform: translateY(0px);
 }
-.streak-fab{ top: 60px; right: 20px; }
-.archive-fab{ top: 130px; right: 20px; }
+.streak-fab{ bottom:20px; right:20px; }
+.archive-fab{ bottom:90px; right:20px; }
 
 .archive-modal-overlay{
   position: fixed; inset: 0;
@@ -1068,229 +1061,217 @@ button:disabled{ background:#ccc; color:#666; cursor:not-allowed; box-shadow: no
 }
 
 /* =========================================================
-   MOBILE TABLE FIX — Poeltl-style full-width grid
-   Paste this at the VERY BOTTOM of App.css
+   PLAYER QUICK FACTS CARD — hover/tap guessed player names
    ========================================================= */
-
-@media (max-width: 768px) {
-  html,
-  body,
-  #root {
-    width: 100%;
-    overflow-x: hidden;
-  }
-
-  .App {
-    width: 100%;
-    max-width: 100%;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    box-sizing: border-box;
-    overflow-x: hidden;
-  }
-
-  .game-info {
-    width: 100vw !important;
-    max-width: 100vw !important;
-    padding: 0 3px !important;
-    margin: 8px 0 0 !important;
-    box-sizing: border-box;
-  }
-
-  .info-box {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    border: none !important;
-    border-radius: 0 !important;
-    background: transparent !important;
-    box-shadow: none !important;
-    overflow: visible !important;
-    box-sizing: border-box;
-  }
-
-  .info-box-inner {
-    width: 100% !important;
-    min-width: 0 !important;
-    max-width: 100% !important;
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 4px !important;
-    box-sizing: border-box;
-  }
-
-  .title {
-    display: grid !important;
-    grid-template-columns: 1.55fr 0.78fr 0.72fr 0.8fr 0.72fr 0.62fr 0.55fr !important;
-    width: 100% !important;
-    height: 26px !important;
-    min-height: 26px !important;
-    margin: 0 0 3px !important;
-    gap: 0 !important;
-    box-sizing: border-box;
-  }
-
-  .title .info-label {
-    width: auto !important;
-    min-width: 0 !important;
-    flex: none !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    font-size: 10px !important;
-    line-height: 1 !important;
-    padding: 0 1px !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-  }
-
-  .mobile-grid-head {
-    display: none !important;
-  }
-
-  .guess {
-    display: grid !important;
-    grid-template-columns: 1.55fr 0.78fr 0.72fr 0.8fr 0.72fr 0.62fr 0.55fr !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    height: 48px !important;
-    min-height: 48px !important;
-    margin: 0 0 4px !important;
-    padding: 0 !important;
-    gap: 0 !important;
-    border: 2px solid #d1d5db !important;
-    border-radius: 6px !important;
-    background: #fff !important;
-    overflow: hidden !important;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.12) !important;
-    box-sizing: border-box !important;
-    animation: guessFadeIn .25s ease-out !important;
-  }
-
-  .guess:hover {
-    transform: none !important;
-  }
-
-  .guess::before {
-    display: none !important;
-  }
-
-  .guess .info-item {
-    width: auto !important;
-    min-width: 0 !important;
-    flex: none !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    height: 100% !important;
-    padding: 2px 1px !important;
-    font-size: 10px !important;
-    line-height: 1.05 !important;
-    font-weight: 700 !important;
-    text-align: center !important;
-    white-space: normal !important;
-    overflow: hidden !important;
-    text-overflow: clip !important;
-    word-break: normal !important;
-    box-sizing: border-box !important;
-    border-bottom: none !important;
-    border-right: 1px dotted #b0b3b8 !important;
-    color: #222 !important;
-  }
-
-  .guess .info-item:last-child {
-    border-right: none !important;
-  }
-
-  .guess .info-item::before {
-    content: none !important;
-    display: none !important;
-  }
-
-  .guess .name-cell {
-    font-size: 9.5px !important;
-    padding: 2px 3px !important;
-    line-height: 1.05 !important;
-  }
-
-  .team-cell > div {
-    gap: 0 !important;
-  }
-
-  .team-cell img {
-    height: 17px !important;
-    max-width: 28px !important;
-    margin-bottom: 0 !important;
-  }
-
-  .team-cell span {
-    font-size: 9px !important;
-    margin-top: 0 !important;
-  }
-
-  .pos-cell,
-  .conf-cell,
-  .ht-cell,
-  .age-cell,
-  .num-cell {
-    font-size: 10px !important;
-  }
-
-  .guess .info-item.ht-cell,
-  .guess .info-item.age-cell,
-  .guess .info-item.num-cell {
-    flex-direction: column !important;
-    gap: 0 !important;
-  }
-
-  .guess .info-item.ht-cell span,
-  .guess .info-item.age-cell span,
-  .guess .info-item.num-cell span {
-    font-size: 10px !important;
-    margin: 0 !important;
-    line-height: 1 !important;
-  }
-
-  .game-info h3 {
-    font-size: 0.95em !important;
-    margin: 0 0 6px !important;
-  }
+.player-card-trigger {
+  cursor: pointer;
+  position: relative;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
 }
 
-@media (max-width: 420px) {
-  .game-info {
-    padding: 0 2px !important;
+.player-card-trigger:hover {
+  background: linear-gradient(135deg, #fff7d8 0%, #fff0bb 100%) !important;
+  color: #111 !important;
+}
+
+.quick-card-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 4200;
+  background: rgba(0, 0, 0, 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  box-sizing: border-box;
+  animation: quickOverlayFade .16s ease-out;
+}
+
+.quick-player-card {
+  width: min(390px, 94vw);
+  background: #fff;
+  color: #111;
+  border: 3px solid #111;
+  border-radius: 18px;
+  box-shadow: 0 18px 50px rgba(0,0,0,.32), 0 0 0 4px rgba(255,89,16,.18);
+  padding: 14px;
+  position: relative;
+  font-family: 'Chakra Petch', serif;
+  animation: quickCardPop .18s cubic-bezier(.34,1.56,.64,1);
+}
+
+.quick-card-close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  border: 2px solid #111;
+  border-radius: 50%;
+  background: #fff;
+  color: #111;
+  padding: 0;
+  margin: 0;
+  font-size: 20px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: none;
+  z-index: 2;
+}
+
+.quick-card-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-right: 24px;
+}
+
+.quick-card-headshot {
+  width: 86px;
+  height: 86px;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 2px solid #111;
+  background: #eee;
+}
+
+.quick-card-main {
+  min-width: 0;
+  flex: 1;
+  text-align: left;
+}
+
+.quick-card-kicker {
+  display: inline-block;
+  background: #FF5910;
+  color: #fff;
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.quick-card-main h3 {
+  margin: 0 0 4px;
+  font-size: 22px;
+  line-height: 1.05;
+  font-weight: 900;
+  font-family: 'Chakra Petch', serif;
+}
+
+.quick-card-sub {
+  font-size: 14px;
+  color: #555;
+  font-weight: 700;
+}
+
+.quick-card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 7px;
+  margin-top: 14px;
+}
+
+.quick-card-grid div {
+  background: #fff3c4;
+  border: 2px solid #d4a800;
+  border-radius: 12px;
+  padding: 8px 5px;
+  text-align: center;
+  min-width: 0;
+}
+
+.quick-card-grid span,
+.quick-card-path span {
+  display: block;
+  font-size: 10px;
+  color: #6a5500;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  margin-bottom: 3px;
+}
+
+.quick-card-grid strong {
+  display: block;
+  font-size: 15px;
+  color: #111;
+  line-height: 1.05;
+}
+
+.quick-card-path {
+  margin-top: 9px;
+  background: #f7f7f7;
+  border: 2px solid #e1e1e1;
+  border-radius: 12px;
+  padding: 9px 10px;
+  text-align: left;
+}
+
+.quick-card-path strong {
+  display: block;
+  font-size: 14px;
+  line-height: 1.25;
+  color: #111;
+  word-break: break-word;
+}
+
+.quick-card-note {
+  margin-top: 8px;
+  font-size: 11px;
+  color: #666;
+  text-align: center;
+}
+
+@keyframes quickOverlayFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes quickCardPop {
+  from { opacity: 0; transform: translateY(12px) scale(.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 520px) {
+  .quick-card-overlay {
+    align-items: flex-end;
+    padding: 10px;
   }
 
-  .title {
-    grid-template-columns: 1.48fr 0.76fr 0.68fr 0.76fr 0.7fr 0.58fr 0.52fr !important;
+  .quick-player-card {
+    width: 100%;
+    border-radius: 16px;
+    padding: 12px;
   }
 
-  .guess {
-    grid-template-columns: 1.48fr 0.76fr 0.68fr 0.76fr 0.7fr 0.58fr 0.52fr !important;
-    height: 46px !important;
-    min-height: 46px !important;
+  .quick-card-headshot {
+    width: 72px;
+    height: 72px;
   }
 
-  .title .info-label {
-    font-size: 9px !important;
+  .quick-card-main h3 {
+    font-size: 18px;
   }
 
-  .guess .info-item {
-    font-size: 9px !important;
+  .quick-card-sub {
+    font-size: 12px;
   }
 
-  .guess .name-cell {
-    font-size: 8.5px !important;
+  .quick-card-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 
-  .team-cell img {
-    height: 15px !important;
-  }
-
-  .team-cell span {
-    font-size: 8px !important;
+  .quick-card-grid strong,
+  .quick-card-path strong {
+    font-size: 13px;
   }
 }

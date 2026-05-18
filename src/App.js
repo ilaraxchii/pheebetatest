@@ -217,6 +217,7 @@ function App() {
   const [showActualPortrait, setShowActualPortrait] = useState(false);
   const [showPortraitModal, setShowPortraitModal] = useState(false);
   const [portraitModalDismissed, setPortraitModalDismissed] = useState(false);
+  const [quickCardPlayer, setQuickCardPlayer] = useState(null);
   const intervalRef = useRef(null);
 
   // 🔥 Streak/leaderboard + team/logo + tabs + my badges/plays
@@ -351,6 +352,7 @@ function App() {
     setShowActualPortrait(false);
     setShowPortraitModal(false);
     setPortraitModalDismissed(false);
+    setQuickCardPlayer(null);
     setTimer(0);
     startTimer();
   };
@@ -1030,7 +1032,12 @@ function App() {
                 <div>Team</div><div>Pos</div><div>Conf</div><div>Ht</div><div>Age</div><div>#</div>
               </div>
 
-              {previousGuesses.map((prevGuess, index) => (
+              {previousGuesses.map((prevGuess, index) => {
+                const guessedPlayerInfo = prevGuess
+                  ? players.find(p => p.name.toLowerCase().trim() === prevGuess.guess.toLowerCase().trim())
+                  : null;
+
+                return (
                 <div
                   key={index}
                   className={`info-item-wrapper guess${
@@ -1041,7 +1048,20 @@ function App() {
                         : ''
                   }`}
                 >
-                  <div className="info-item name-cell">
+                  <div
+                    className={`info-item name-cell ${guessedPlayerInfo ? 'player-card-trigger' : ''}`}
+                    onMouseEnter={() => guessedPlayerInfo && setQuickCardPlayer(guessedPlayerInfo)}
+                    onClick={() => guessedPlayerInfo && setQuickCardPlayer(guessedPlayerInfo)}
+                    role={guessedPlayerInfo ? 'button' : undefined}
+                    tabIndex={guessedPlayerInfo ? 0 : undefined}
+                    onKeyDown={(e) => {
+                      if (guessedPlayerInfo && (e.key === 'Enter' || e.key === ' ')) {
+                        e.preventDefault();
+                        setQuickCardPlayer(guessedPlayerInfo);
+                      }
+                    }}
+                    title={guessedPlayerInfo ? `Quick facts: ${guessedPlayerInfo.name}` : ''}
+                  >
                     {prevGuess ? prevGuess.guess : ''}
                   </div>
 
@@ -1103,12 +1123,65 @@ function App() {
                     )}
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
         {/* === /Previous Guesses === */}
       </div>
+
+      {quickCardPlayer && (
+        <div className="quick-card-overlay" onClick={() => setQuickCardPlayer(null)}>
+          <div className="quick-player-card" onClick={(e) => e.stopPropagation()}>
+            <button
+              className="quick-card-close"
+              onClick={() => setQuickCardPlayer(null)}
+              aria-label="Close player quick facts"
+            >
+              ×
+            </button>
+
+            <div className="quick-card-top">
+              <img
+                className="quick-card-headshot"
+                src={`${PUB}/images/${slugify(quickCardPlayer.name)}-headshot.png`}
+                alt={quickCardPlayer.name}
+                onError={(e) => {
+                  e.currentTarget.src = `${PUB}/images/${slugify(quickCardPlayer.name)}-actual.png`;
+                }}
+              />
+              <div className="quick-card-main">
+                <div className="quick-card-kicker">Quick facts</div>
+                <h3>{quickCardPlayer.name}</h3>
+                <div className="quick-card-sub">
+                  {quickCardPlayer.team} • {quickCardPlayer.position} • #{quickCardPlayer.number}
+                </div>
+              </div>
+            </div>
+
+            <div className="quick-card-grid">
+              <div><span>Height</span><strong>{quickCardPlayer.height}</strong></div>
+              <div><span>Age</span><strong>{quickCardPlayer.age}</strong></div>
+              <div><span>Conf</span><strong>{quickCardPlayer.conf}</strong></div>
+              <div><span>Team</span><strong>{quickCardPlayer.team}</strong></div>
+            </div>
+
+            <div className="quick-card-path">
+              <span>Career path</span>
+              <strong>
+                {quickCardPlayer.previousTeams?.length
+                  ? `${quickCardPlayer.previousTeams.join(' → ')} → ${quickCardPlayer.team}`
+                  : quickCardPlayer.team}
+              </strong>
+            </div>
+
+            <div className="quick-card-note">
+              Tap another guessed player name to swap cards.
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 🔥 Floating streak button */}
       <button
