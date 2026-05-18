@@ -339,10 +339,17 @@ button:disabled{ background:#ccc; color:#666; cursor:not-allowed; box-shadow: no
 @keyframes moveUpDown{ 0%{transform:translateY(0)} 50%{transform:translateY(-5px)} 100%{transform:translateY(0)} }
 @keyframes moveDownUp{ 0%{transform:translateY(0)} 50%{transform:translateY(5px)} 100%{transform:translateY(0)} }
 @keyframes guessFadeIn{ from{opacity:0; transform:translateY(-5px)} to{opacity:1; transform:translateY(0)} }
-.arrow-up{ display:inline-block; animation: moveUpDown 2s infinite; margin-left:5px; }
-.arrow-down{ display:inline-block; animation: moveDownUp 2s infinite; margin-left:5px; }
+.arrow-up{ display:inline-block; animation: moveUpDown 2s infinite; margin-left:8px; }
+.arrow-down{ display:inline-block; animation: moveDownUp 2s infinite; margin-left:8px; }
 /* nudge arrows in age column a touch */
 .age-cell .arrow-up, .age-cell .arrow-down { margin-top:2px; }
+
+@media (max-width:768px) {
+  .arrow-up, .arrow-down {
+    margin-left: 12px;
+    font-size: 0.8em;
+  }
+}
 
 /* images */
 .silhouette{ 
