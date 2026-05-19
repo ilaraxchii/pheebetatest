@@ -19,6 +19,21 @@ const teamCodeToFile = (code) => {
   return c;
 };
 
+// team color mapping for quick facts modal theming
+const TEAM_COLORS = {
+  'ATL': { primary: '#ce1141', secondary: '#e89923' }, // red, gold
+  'CHI': { primary: '#ffd700', secondary: '#0052cc' }, // yellow, blue
+  'CON': { primary: '#dd6031', secondary: '#0052cc' }, // orange, blue
+  'DAL': { primary: '#1a5490', secondary: '#00b2a9' }, // navy, teal
+  'IND': { primary: '#ed1c24', secondary: '#000000' }, // red, black
+  'LVA': { primary: '#c41e3a', secondary: '#ffd700' }, // red, gold
+  'MIN': { primary: '#003396', secondary: '#00b4a3' }, // navy, teal
+  'NYL': { primary: '#1d428a', secondary: '#ffa500' }, // blue, orange
+  'PHX': { primary: '#e56021', secondary: '#6b2c91' }, // orange, purple
+  'SEA': { primary: '#0c2c56', secondary: '#fff44f' }, // navy, yellow
+  'WAS': { primary: '#e31937', secondary: '#002b5c' }, // red, navy
+};
+
 // ================= rotation & storage =================
 const DEBUG =
   new URLSearchParams(window.location.search).get('debug') === '1' ||
@@ -218,6 +233,8 @@ function App() {
   const [showPortraitModal, setShowPortraitModal] = useState(false);
   const [portraitModalDismissed, setPortraitModalDismissed] = useState(false);
   const [quickCardPlayer, setQuickCardPlayer] = useState(null);
+  const [quickCardHoverTimeout, setQuickCardHoverTimeout] = useState(null);
+  const [quickCardFlipped, setQuickCardFlipped] = useState(false);
   const intervalRef = useRef(null);
 
   // 🔥 Streak/leaderboard + team/logo + tabs + my badges/plays
@@ -1050,7 +1067,21 @@ function App() {
                 >
                   <div
                     className={`info-item name-cell ${guessedPlayerInfo ? 'player-card-trigger' : ''}`}
-                    onMouseEnter={() => guessedPlayerInfo && setQuickCardPlayer(guessedPlayerInfo)}
+                    onMouseEnter={() => {
+                      if (!guessedPlayerInfo) return;
+                      // 1.5 second delay on desktop before showing quick facts
+                      const timeout = setTimeout(() => {
+                        setQuickCardPlayer(guessedPlayerInfo);
+                      }, 1500);
+                      setQuickCardHoverTimeout(timeout);
+                    }}
+                    onMouseLeave={() => {
+                      // Clear timeout if mouse leaves before delay completes
+                      if (quickCardHoverTimeout) {
+                        clearTimeout(quickCardHoverTimeout);
+                        setQuickCardHoverTimeout(null);
+                      }
+                    }}
                     onClick={() => guessedPlayerInfo && setQuickCardPlayer(guessedPlayerInfo)}
                     role={guessedPlayerInfo ? 'button' : undefined}
                     tabIndex={guessedPlayerInfo ? 0 : undefined}
@@ -1132,53 +1163,60 @@ function App() {
       </div>
 
       {quickCardPlayer && (
-        <div className="quick-card-overlay" onClick={() => setQuickCardPlayer(null)}>
-          <div className="quick-player-card" onClick={(e) => e.stopPropagation()}>
-            <button
-              className="quick-card-close"
-              onClick={() => setQuickCardPlayer(null)}
-              aria-label="Close player quick facts"
-            >
-              ×
-            </button>
-
-            <div className="quick-card-top">
-              <img
-                className="quick-card-headshot"
-                src={`${PUB}/images/${slugify(quickCardPlayer.name)}-headshot.png`}
-                alt={quickCardPlayer.name}
-                onError={(e) => {
-                  e.currentTarget.src = `${PUB}/images/${slugify(quickCardPlayer.name)}-actual.png`;
-                }}
-              />
-              <div className="quick-card-main">
-                <div className="quick-card-kicker">Quick facts</div>
-                <h3>{quickCardPlayer.name}</h3>
-                <div className="quick-card-sub">
-                  {quickCardPlayer.team} • {quickCardPlayer.position} • #{quickCardPlayer.number}
+        <div className="quick-card-overlay" onClick={() => {
+          setQuickCardPlayer(null);
+          setQuickCardFlipped(false);
+        }}>
+          <div 
+            className={`quick-player-card`}
+            style={{
+              transformStyle: 'preserve-3d',
+              transform: quickCardFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+              transition: 'transform 0.4s ease-out',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {!quickCardFlipped && (
+              <div className="quick-card-flip-front">
+                <button className="quick-card-close" onClick={() => { setQuickCardPlayer(null); setQuickCardFlipped(false); }}>×</button>
+                <div className="quick-card-top">
+                  <div style={{ position: 'relative' }}>
+                    <img className="quick-card-headshot" src={`${PUB}/images/${slugify(quickCardPlayer.name)}-actual.png`} alt={quickCardPlayer.name} onError={(e) => { e.currentTarget.src = `${PUB}/images/${slugify(quickCardPlayer.name)}-headshot.png`; }} />
+                    <img src={`${PUB}/logos/${teamCodeToFile(quickCardPlayer.team)}.png`} alt={quickCardPlayer.team} style={{ position: 'absolute', bottom: '4px', right: '4px', width: '28px', height: '28px', border: '2px solid #fff', borderRadius: '4px', background: '#fff', padding: '2px', boxSizing: 'border-box' }} />
+                  </div>
+                  <div className="quick-card-main">
+                    <div className="quick-card-kicker" style={{ backgroundColor: TEAM_COLORS[quickCardPlayer.team]?.primary || '#FF5910' }}>Quick facts</div>
+                    <h3>{quickCardPlayer.name}</h3>
+                    <div className="quick-card-sub">{quickCardPlayer.team} • {quickCardPlayer.position} • #{quickCardPlayer.number}</div>
+                  </div>
                 </div>
+                <div className="quick-card-grid">
+                  <div style={{ borderColor: TEAM_COLORS[quickCardPlayer.team]?.primary || '#d4a800', backgroundColor: TEAM_COLORS[quickCardPlayer.team]?.primary ? `${TEAM_COLORS[quickCardPlayer.team].primary}15` : '#fff3c4' }}><span>Height</span><strong>{quickCardPlayer.height}</strong></div>
+                  <div style={{ borderColor: TEAM_COLORS[quickCardPlayer.team]?.primary || '#d4a800', backgroundColor: TEAM_COLORS[quickCardPlayer.team]?.primary ? `${TEAM_COLORS[quickCardPlayer.team].primary}15` : '#fff3c4' }}><span>Age</span><strong>{quickCardPlayer.age}</strong></div>
+                  <div style={{ borderColor: TEAM_COLORS[quickCardPlayer.team]?.primary || '#d4a800', backgroundColor: TEAM_COLORS[quickCardPlayer.team]?.primary ? `${TEAM_COLORS[quickCardPlayer.team].primary}15` : '#fff3c4' }}><span>Conf</span><strong>{quickCardPlayer.conf}</strong></div>
+                  <div style={{ borderColor: TEAM_COLORS[quickCardPlayer.team]?.primary || '#d4a800', backgroundColor: TEAM_COLORS[quickCardPlayer.team]?.primary ? `${TEAM_COLORS[quickCardPlayer.team].primary}15` : '#fff3c4' }}><span>Team</span><strong>{quickCardPlayer.team}</strong></div>
+                </div>
+                <div className="quick-card-path" style={{ borderColor: TEAM_COLORS[quickCardPlayer.team]?.primary || '#e1e1e1' }}>
+                  <span>Career path</span>
+                  <strong>{quickCardPlayer.previousTeams?.length ? `${quickCardPlayer.previousTeams.join(' → ')} → ${quickCardPlayer.team}` : quickCardPlayer.team}</strong>
+                </div>
+                <button onClick={() => setQuickCardFlipped(true)} style={{ marginTop: '10px', width: '100%', padding: '8px', background: TEAM_COLORS[quickCardPlayer.team]?.primary || '#FF5910', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '12px', fontWeight: '700' }}>See Stats →</button>
               </div>
-            </div>
-
-            <div className="quick-card-grid">
-              <div><span>Height</span><strong>{quickCardPlayer.height}</strong></div>
-              <div><span>Age</span><strong>{quickCardPlayer.age}</strong></div>
-              <div><span>Conf</span><strong>{quickCardPlayer.conf}</strong></div>
-              <div><span>Team</span><strong>{quickCardPlayer.team}</strong></div>
-            </div>
-
-            <div className="quick-card-path">
-              <span>Career path</span>
-              <strong>
-                {quickCardPlayer.previousTeams?.length
-                  ? `${quickCardPlayer.previousTeams.join(' → ')} → ${quickCardPlayer.team}`
-                  : quickCardPlayer.team}
-              </strong>
-            </div>
-
-            <div className="quick-card-note">
-              Tap another guessed player name to swap cards.
-            </div>
+            )}
+            {quickCardFlipped && (
+              <div className="quick-card-flip-back">
+                <button className="quick-card-close" onClick={() => { setQuickCardPlayer(null); setQuickCardFlipped(false); }}>×</button>
+                <h3 style={{ margin: '0 0 4px', fontSize: '16px', textAlign: 'center', fontWeight: '900' }}>{quickCardPlayer.name}</h3>
+                <p style={{ margin: '0 0 12px', textAlign: 'center', color: '#666', fontSize: '11px', fontWeight: '700' }}>Career Stats</p>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '12px' }}>
+                  <div style={{ background: TEAM_COLORS[quickCardPlayer.team]?.primary ? `${TEAM_COLORS[quickCardPlayer.team].primary}15` : '#f5f5f5', padding: '10px', borderRadius: '8px', textAlign: 'center', border: `2px solid ${TEAM_COLORS[quickCardPlayer.team]?.primary || '#e0e0e0'}` }}><div style={{ fontSize: '10px', fontWeight: '700', color: '#666' }}>PPG</div><div style={{ fontSize: '16px', fontWeight: '900', marginTop: '2px' }}>{quickCardPlayer.stats?.ppg || '—'}</div></div>
+                  <div style={{ background: TEAM_COLORS[quickCardPlayer.team]?.primary ? `${TEAM_COLORS[quickCardPlayer.team].primary}15` : '#f5f5f5', padding: '10px', borderRadius: '8px', textAlign: 'center', border: `2px solid ${TEAM_COLORS[quickCardPlayer.team]?.primary || '#e0e0e0'}` }}><div style={{ fontSize: '10px', fontWeight: '700', color: '#666' }}>RPG</div><div style={{ fontSize: '16px', fontWeight: '900', marginTop: '2px' }}>{quickCardPlayer.stats?.rpg || '—'}</div></div>
+                  <div style={{ background: TEAM_COLORS[quickCardPlayer.team]?.primary ? `${TEAM_COLORS[quickCardPlayer.team].primary}15` : '#f5f5f5', padding: '10px', borderRadius: '8px', textAlign: 'center', border: `2px solid ${TEAM_COLORS[quickCardPlayer.team]?.primary || '#e0e0e0'}` }}><div style={{ fontSize: '10px', fontWeight: '700', color: '#666' }}>APG</div><div style={{ fontSize: '16px', fontWeight: '900', marginTop: '2px' }}>{quickCardPlayer.stats?.apg || '—'}</div></div>
+                  <div style={{ background: TEAM_COLORS[quickCardPlayer.team]?.primary ? `${TEAM_COLORS[quickCardPlayer.team].primary}15` : '#f5f5f5', padding: '10px', borderRadius: '8px', textAlign: 'center', border: `2px solid ${TEAM_COLORS[quickCardPlayer.team]?.primary || '#e0e0e0'}` }}><div style={{ fontSize: '10px', fontWeight: '700', color: '#666' }}>FG%</div><div style={{ fontSize: '16px', fontWeight: '900', marginTop: '2px' }}>{quickCardPlayer.stats?.fgp ? `${quickCardPlayer.stats.fgp}%` : '—'}</div></div>
+                </div>
+                <button onClick={() => setQuickCardFlipped(false)} style={{ width: '100%', padding: '8px', background: TEAM_COLORS[quickCardPlayer.team]?.primary || '#FF5910', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '12px', fontWeight: '700' }}>← Back</button>
+              </div>
+            )}
           </div>
         </div>
       )}
