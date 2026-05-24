@@ -1,0 +1,31 @@
+name: Daily WNBA Stats Scrape
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # Runs 2 AM UTC daily (after games end)
+  workflow_dispatch:     # Manual trigger button
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      
+      - name: Install dependencies
+        run: npm install axios cheerio
+      
+      - name: Scrape WNBA stats
+        run: node scripts/scrape-stats.js
+      
+      - name: Commit and push
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "Stats Bot"
+          git add src/players.js
+          git commit -m "chore: update WNBA stats $(date +%Y-%m-%d)" || echo "No changes"
+          git push
