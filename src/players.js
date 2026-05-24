@@ -180,7 +180,7 @@ const players = [
   { id: 5006, name: "Carla Leite", team: "POR", position: "G", number: "0", age: 22, height: "5'9\"", conf: "West", previousTeams: ["GSV"] },
   { id: 89, name: "Sug Sutton", team: "POR", position: "G", number: "1", age: 27, height: "5'8\"", conf: "West", previousTeams: ["PHX","WAS"] },
   { id: 73, name: "Sarah Ashlee Barker", team: "POR", position: "G", number: "3", age: 24, height: "6'0\"", conf: "West", previousTeams: ["LAS"] },
-  { id: 15, name: "Bridget Carleton", team: "POR", position: "F", number: "6", age: 28, height: "6'2\"", conf: "West", previousTeams: ["CON","ATL","MIN"] },
+  { id: 15, name: "Bridget Carleton", team: "POR", position: "F", number: "6", age: 28, height: "6'2\"", conf: "West", previousTeams: ["CON","MIN"] },
   { id: 2058, name: "Teja Oblak", team: "POR", position: "G", number: "7", age: 35, height: "5'8\"", conf: "West", previousTeams: [] },
   { id: 2059, name: "Holly Winterburn", team: "POR", position: "G", number: "7", age: 26, height: "5'11\"", conf: "West", previousTeams: ["ATL"] },
   { id: 2060, name: "Kamiah Smalls", team: "POR", position: "G", number: "8", age: 28, height: "5'10\"", conf: "West", previousTeams: ["IND"] },
