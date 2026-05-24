@@ -1,75 +1,55 @@
 const axios = require('axios');
-const cheerio = require('cheerio');
 const fs = require('fs');
 const path = require('path');
 
 async function scrapeWNBAStats() {
   try {
-    // Fetch player stats page
-    const url = 'https://www.wnba.com/stats/players/';
-    console.log('Fetching from:', url);
-    const { data } = await axios.get(url, {
-      headers: { 'User-Agent': 'Mozilla/5.0' }
-    });
-    const $ = cheerio.load(data);
+    // WNBA API endpoint (if available)
+    const url = 'https://stats.nba.com/stats/leagueLeaders?StatCategory=PTS&Season=2025-26&SeasonType=Regular%20Season&LeagueID=10';
+    console.log('Fetching from NBA API...');
     
+    const { data } = await axios.get(url);
     const stats = {};
     
-    // Find all player rows/cards
-    $('tr').each((i, row) => {
-      const cells = $(row).find('td');
-      if (cells.length < 5) return;
-      
-      const name = $(cells[0]).text().trim();
-      const ppg = parseFloat($(cells[1]).text()) || null;
-      const rpg = parseFloat($(cells[2]).text()) || null;
-      const apg = parseFloat($(cells[3]).text()) || null;
-      const fgp = parseFloat($(cells[4]).text()) || null;
-      
-      if (name && ppg && name.length > 2) {
-        const key = name.toLowerCase().replace(/[^a-z]/g, '');
-        stats[key] = { name, ppg, rpg, apg, fgp };
-        console.log(`Found: ${name} - ${ppg} PPG`);
-      }
-    });
+    // Parse NBA API response for WNBA data
+    if (data.resultSets && data.resultSets[0]) {
+      const rows = data.resultSets[0].rowSet;
+      rows.forEach(row => {
+        const name = row[1];
+        const ppg = parseFloat(row[29]) || 0;
+        const rpg = parseFloat(row[20]) || 0;
+        const apg = parseFloat(row[21]) || 0;
+        const fgp = parseFloat(row[9]) || 0;
+        
+        if (name && ppg) {
+          stats[name.toLowerCase().replace(/[^a-z]/g, '')] = { name, ppg, rpg, apg, fgp };
+        }
+      });
+    }
     
-    console.log(`✅ Total: ${Object.keys(stats).length} players`);
+    console.log(`✅ Found ${Object.keys(stats).length} players`);
     return stats;
   } catch (error) {
-    console.error('Scrape error:', error.message);
+    console.error('Error:', error.message);
     return {};
   }
 }
 
 async function updatePlayersFile(statsMap) {
-  if (Object.keys(statsMap).length === 0) {
-    console.log('No stats found');
-    return;
-  }
-  
   const playersFile = path.join(__dirname, '../src/players.js');
   let content = fs.readFileSync(playersFile, 'utf8');
   let updated = 0;
   
-  // Better regex that actually works
-  for (const [key, stat] of Object.entries(statsMap)) {
-    const escaped = stat.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const pattern = new RegExp(
-      `(\\{[^}]*name:\\s*"${escaped}"[^}]*previousTeams:\\s*\\[[^\\]]*\\])`
-    );
-    
+  Object.entries(statsMap).forEach(([key, stat]) => {
+    const pattern = new RegExp(`name: "${stat.name.replace(/"/g, '\\"')}"([^}]*previousTeams:[^\\]]*\\])`);
     if (pattern.test(content)) {
-      content = content.replace(
-        pattern,
-        `$1, stats: { ppg: ${stat.ppg}, rpg: ${stat.rpg}, apg: ${stat.apg}, fgp: ${stat.fgp} }`
-      );
+      content = content.replace(pattern, `name: "${stat.name}"$1, stats: { ppg: ${stat.ppg}, rpg: ${stat.rpg}, apg: ${stat.apg}, fgp: ${stat.fgp} }`);
       updated++;
-      console.log(`Updated: ${stat.name}`);
     }
-  }
+  });
   
   fs.writeFileSync(playersFile, content);
-  console.log(`✅ Updated ${updated} players in players.js`);
+  console.log(`✅ Updated ${updated} players`);
 }
 
 (async () => {
