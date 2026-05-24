@@ -1523,3 +1523,19 @@ button:disabled{ background:#ccc; color:#666; cursor:not-allowed; box-shadow: no
 .quick-card-flip-back {
   transform: rotateY(180deg);
 }
+
+/* Archive date input - disable future dates styling */
+#archiveDate {
+  cursor: pointer;
+}
+
+#archiveDate:disabled,
+#archiveDate[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Disabled dates in date picker are grayed out by browser */
+input[type="date"]::before {
+  content: attr(data-date);
+}

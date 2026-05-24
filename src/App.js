@@ -90,6 +90,26 @@ function mulberry32(a) {
 
 const playersStable = [...players].sort((a, b) => (a.id ?? 0) - (b.id ?? 0));
 
+// Create a hash of current roster to detect changes
+function getRosterHash() {
+  return playersStable.map(p => p.id).join(',');
+}
+
+// Create a shuffled rotation based on CURRENT players (detects roster changes)
+function createShuffledRotation() {
+  const shuffled = [...playersStable];
+  // Use roster hash as seed so changes reshuffle automatically
+  const seed = xmur3(getRosterHash())();
+  const rand = mulberry32(seed);
+  
+  // Fisher-Yates shuffle with seeded RNG
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
 const STORAGE_PREFIX = 'phee:v1';
 const gameKeyFor = (rotationKey) => `${STORAGE_PREFIX}:game:${rotationKey}`;
 const solutionKeyFor = (rotationKey) => `${STORAGE_PREFIX}:solution:${rotationKey}`;
@@ -97,10 +117,18 @@ const lockKeyFor = (rotationKey) => `${STORAGE_PREFIX}:locked:${rotationKey}`;
 const isLocked = (rotationKey) => localStorage.getItem(lockKeyFor(rotationKey)) === '1';
 
 function pickSolutionFor(rotationKey) {
-  const seed = xmur3(rotationKey)();
-  const rand = mulberry32(seed);
-  const idx = Math.floor(rand() * playersStable.length);
-  return playersStable[idx];
+  // Create fresh rotation based on CURRENT roster (handles trades/moves/waivers)
+  const playerRotation = createShuffledRotation();
+  
+  // Calculate days since epoch (consistent across all users)
+  const [year, month, day] = rotationKey.split('-').map(Number);
+  const date = new Date(year, month - 1, day);
+  const epochDate = new Date(2024, 0, 1); // Start date
+  const daysSinceStart = Math.floor((date - epochDate) / (1000 * 60 * 60 * 24));
+  
+  // Cycle through the shuffled rotation (no duplicates until full cycle)
+  const rotationIndex = daysSinceStart % playerRotation.length;
+  return playerRotation[rotationIndex];
 }
 
 // ================= Device ID binding (anti-hijack) =================
@@ -1377,6 +1405,7 @@ function App() {
                 id="archiveDate"
                 type="date"
                 value={archiveDate}
+                max={ctDateStr()}
                 onChange={(e) => setArchiveDate(e.target.value)}
               />
             </div>
