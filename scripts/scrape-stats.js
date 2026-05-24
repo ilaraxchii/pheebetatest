@@ -5,31 +5,27 @@ const path = require('path');
 
 async function scrapeWNBAStats() {
   try {
-    const url = 'https://www.basketball-reference.com/wnba/years/2026_per_game.html';
-    console.log('Fetching:', url);
+    const url = 'https://www.wnba.com/stats/';
+    console.log('Fetching WNBA stats...');
     const { data } = await axios.get(url);
     const $ = cheerio.load(data);
     
     const stats = {};
-    let rowCount = 0;
     
-    $('table#per_game tbody tr').each((i, row) => {
-      rowCount++;
-      const cells = $(row).find('td');
-      const name = $(cells[1]).text().trim();
-      const ppg = parseFloat($(cells[5]).text());
+    // WNBA.com player stats - adjust selectors based on actual HTML
+    $('[data-stat-type="player"]').each((i, el) => {
+      const name = $(el).find('[data-name]').text().trim();
+      const ppg = parseFloat($(el).find('[data-ppg]').text()) || 0;
+      const rpg = parseFloat($(el).find('[data-rpg]').text()) || 0;
+      const apg = parseFloat($(el).find('[data-apg]').text()) || 0;
+      const fgp = parseFloat($(el).find('[data-fgp]').text()) || 0;
       
-      if (name && !isNaN(ppg)) {
-        stats[name.toLowerCase().replace(/[^a-z]/g, '')] = {
-          name, ppg,
-          rpg: parseFloat($(cells[7]).text()) || 0,
-          apg: parseFloat($(cells[8]).text()) || 0,
-          fgp: parseFloat($(cells[9]).text()) || 0
-        };
+      if (name && ppg) {
+        stats[name.toLowerCase().replace(/[^a-z]/g, '')] = { name, ppg, rpg, apg, fgp };
       }
     });
     
-    console.log(`Found ${rowCount} rows, matched ${Object.keys(stats).length} players`);
+    console.log(`✅ Scraped ${Object.keys(stats).length} players from WNBA.com`);
     return stats;
   } catch (error) {
     console.error('Error:', error.message);
@@ -38,25 +34,21 @@ async function scrapeWNBAStats() {
 }
 
 async function updatePlayersFile(statsMap) {
-  try {
-    const playersFile = path.join(__dirname, '../src/players.js');
-    let content = fs.readFileSync(playersFile, 'utf8');
-    let updated = 0;
-    
-    Object.keys(statsMap).forEach(normalized => {
-      const stat = statsMap[normalized];
-      const regex = new RegExp(`name: "${stat.name.replace(/"/g, '\\"')}"([^}]*previousTeams:[^\\]]*\\])`, 'i');
-      if (content.match(regex)) {
-        content = content.replace(regex, `name: "${stat.name}"$1, stats: { ppg: ${stat.ppg}, rpg: ${stat.rpg}, apg: ${stat.apg}, fgp: ${stat.fgp} }`);
-        updated++;
-      }
-    });
-    
-    fs.writeFileSync(playersFile, content);
-    console.log(`Updated ${updated} players`);
-  } catch (error) {
-    console.error('Update error:', error.message);
-  }
+  const playersFile = path.join(__dirname, '../src/players.js');
+  let content = fs.readFileSync(playersFile, 'utf8');
+  let updated = 0;
+  
+  Object.keys(statsMap).forEach(normalized => {
+    const stat = statsMap[normalized];
+    const regex = new RegExp(`name: "${stat.name.replace(/"/g, '\\"')}"([^}]*previousTeams:[^\\]]*\\])`);
+    if (content.match(regex)) {
+      content = content.replace(regex, `name: "${stat.name}"$1, stats: { ppg: ${stat.ppg}, rpg: ${stat.rpg}, apg: ${stat.apg}, fgp: ${stat.fgp} }`);
+      updated++;
+    }
+  });
+  
+  fs.writeFileSync(playersFile, content);
+  console.log(`✅ Updated ${updated} players`);
 }
 
 (async () => {
